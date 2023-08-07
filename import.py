@@ -1,32 +1,44 @@
 import os
-import argparse
+import tkinter as tk
+from tkinter import filedialog
 
 def rename_files(directory_path, prefix=''):
-    # Get a list of all files in the directory
-    files = os.listdir(directory_path)
+    # The same code as before
 
-    # Loop through each file and rename it
-    for index, filename in enumerate(files):
-        # Construct the new file name with the specified prefix and index
-        new_name = f"{prefix}{index + 1}_{filename}"
+def browse_directory():
+    directory_path = filedialog.askdirectory()
+    entry_directory.delete(0, tk.END)
+    entry_directory.insert(0, directory_path)
 
-        # Get the absolute paths of the old and new file names
-        old_path = os.path.join(directory_path, filename)
-        new_path = os.path.join(directory_path, new_name)
+def run_script():
+    directory_path = entry_directory.get()
+    prefix = entry_prefix.get()
+    rename_files(directory_path, prefix)
 
-        try:
-            # Rename the file
-            os.rename(old_path, new_path)
-            print(f"Renamed: {filename} -> {new_name}")
-        except Exception as e:
-            print(f"Error renaming {filename}: {e}")
+# Create the main application window
+root = tk.Tk()
+root.title("File Renamer")
 
-if __name__ == "__main__":
-    # Create an ArgumentParser object to handle command-line arguments
-    parser = argparse.ArgumentParser(description='Rename files in a directory.')
-    parser.add_argument('directory_path', help='Path to the directory containing the files')
-    parser.add_argument('--prefix', default='', help='Prefix for the new file names (optional)')
-    args = parser.parse_args()
+# Create widgets for user input
+label_directory = tk.Label(root, text="Select Directory:")
+entry_directory = tk.Entry(root, width=50)
+button_browse = tk.Button(root, text="Browse", command=browse_directory)
 
-    # Call the function with the provided directory path and prefix
-    rename_files(args.directory_path, args.prefix)
+label_prefix = tk.Label(root, text="Enter Prefix:")
+entry_prefix = tk.Entry(root, width=50)
+
+button_run = tk.Button(root, text="Run Script", command=run_script)
+
+# Layout the widgets using the grid geometry manager
+label_directory.grid(row=0, column=0, padx=10, pady=5)
+entry_directory.grid(row=0, column=1, padx=10, pady=5)
+button_browse.grid(row=0, column=2, padx=10, pady=5)
+
+label_prefix.grid(row=1, column=0, padx=10, pady=5)
+entry_prefix.grid(row=1, column=1, padx=10, pady=5)
+
+button_run.grid(row=2, column=0, columnspan=3, padx=10, pady=5)
+
+# Start the main event loop
+root.mainloop()
+
